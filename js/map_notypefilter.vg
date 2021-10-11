@@ -4,9 +4,9 @@
     "width": 800,
     "height": 600,
     "projection": {
-      "type": "equirectangular" ,
+      "type": "equirectangular",
       "center":[144.96,-37.8],
-      "scale":87000      
+      "scale":87000   
     },
     "params": [{
       "name": "year_selection",
@@ -17,25 +17,6 @@
         "max":2018,
         "step": 1,
         "name": "Year: "
-      }
-    },
-    {
-      "name": "type_selection",
-      "bind": {
-        "input": "select",
-        "options": [
-          "All",
-          "Houses",
-          "Units",
-          "Others"
-        ],
-        "labels": [
-          "Show all",
-          "Houses only",
-          "Units only",
-          "Other types of properties"
-        ],
-        "name": "Property type selection: "
       }
     }
     ],  
@@ -67,7 +48,7 @@
 
     {
       "data": {
-        "url": "https://raw.githubusercontent.com/BigDjeff/FIT3179_homework2/main/data/Melbourne_housing_TRANSFORMED2.csv"},
+        "url": "https://raw.githubusercontent.com/BigDjeff/FIT3179_homework2/main/data/NewTest.csv"},
       "transform":[{
         "lookup": "suburb",
         "from":{
@@ -81,12 +62,11 @@
             "key":"properties.LOC_NAME"
         },
         "as":"geo"
-      }, 
-      {"filter": "datum.year == year_selection"},
-      {"filter": "type_selection == null || datum.type == type_selection"}
+      },
+      {"filter": "datum.year == year_selection"}
 
       ],
-      "mark":{"type": "geoshape","stroke":"#fff","strokeWidth":0.5},
+      "mark":{"type": "geoshape","stroke":"black","strokeWidth":0.5},
       "encoding": {
         "shape":{"field":"geo", "type": "geojson"},
         "color":{
@@ -94,7 +74,7 @@
           "type": "quantitative",
           "scale":{
             "domain":[
-              400000 ,
+              700000 ,
               3000000
             ],
             "scheme":"reds"
@@ -102,7 +82,7 @@
           "legend": {"format": ".2s"}
         },
         "tooltip":[
-        {"field": "suburb", "type": "nominal", "title": "Suburb"},
+        {"field": "suburb", "type": "nominal", "title": "Surburb"},
         {
           "field":"median",
           "type": "quantitative",
