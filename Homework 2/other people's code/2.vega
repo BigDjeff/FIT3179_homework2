@@ -1,0 +1,84 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v4.json",
+  "title": "Victim Reports in Victoria by LGA (2020)",
+  "width": "container",
+  "projection": {"type": "equirectangular"},
+  "layer": [
+    {
+      "data": {
+        "url": "https://raw.githubusercontent.com/cyan0013/FIT3179/master/data2020.csv"
+      },
+      "selection": {
+        "region_highlight": {
+          "type": "multi",
+          "fields": ["PoliceRegion"],
+          "bind": "legend"
+        }
+      },
+      "mark": {"type": "rule"},
+      "encoding": {
+        "color": {
+          "field": "PoliceRegion",
+          "scale": {"range": ["#fff"]},
+          "title": "Police Region"
+        }
+      }
+    },
+    {
+      "data": {
+        "url": "https://raw.githubusercontent.com/cyan0013/FIT3179/master/VIC_LGA_POLYGON_SHP.topojson",
+        "format": {"type": "topojson", "feature": "VIC_LGA_POLYGON_SHP"}
+      },
+      "transform": [
+        {
+          "lookup": "properties.ABB_NAME",
+          "from": {
+            "data": {
+              "url": "https://raw.githubusercontent.com/cyan0013/FIT3179/master/data2020.csv"
+            },
+            "key": "LocalGovernmentArea",
+            "fields": [
+              "Rateper100,000population",
+              "LocalGovernmentArea",
+              "Victim Reports",
+              "PoliceRegion"
+            ]
+          }
+        }
+      ],
+      "mark": {"type": "geoshape"},
+      "encoding": {
+        "color": {
+          "title": "Rate per 100,000",
+          "field": "Rateper100,000population",
+          "type": "quantitative",
+          "scale": {"domain": [0, 8000]}
+        },
+        "opacity": {
+          "condition": {"selection": "region_highlight", "value": 1},
+          "value": 0.2
+        },
+        "tooltip": [
+          {
+            "field": "LocalGovernmentArea",
+            "type": "nominal",
+            "title": "Local Government Area"
+          },
+          {
+            "field": "Victim Reports",
+            "type": "quantitative",
+            "format": ",",
+            "title": "Number of Reports"
+          },
+          {
+            "field": "Rateper100,000population",
+            "type": "quantitative",
+            "format": ",",
+            "title": "Rate per 100,000"
+          }
+        ]
+      }
+    }
+  ],
+  "config": {}
+}

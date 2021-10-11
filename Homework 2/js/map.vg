@@ -1,0 +1,118 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "title": "Melbourne Median House prices",
+    "width": 800,
+    "height": 600,
+    "projection": {
+      "type": "equirectangular" ,
+      "center":[144.96,-37.8],
+      "scale":87000      
+    },
+    "params": [{
+      "name": "year_selection",
+      "value": 2016,
+      "bind":{
+        "input":"range",
+        "min":2016,
+        "max":2018,
+        "step": 1,
+        "name": "Year: "
+      }
+    },
+    {
+      "name": "type_selection",
+      "bind": {
+        "input": "select",
+        "options": [
+          "All",
+          "Houses",
+          "Units",
+          "Others"
+        ],
+        "labels": [
+          "Show all",
+          "Houses only",
+          "Units only",
+          "Other types of properties"
+        ],
+        "name": "Property type selection: "
+      }
+    }
+    ],  
+
+    "layer":[
+      {
+      "data": {
+        "url": "https://raw.githubusercontent.com/BigDjeff/FIT3179_homework2/main/js/vic_localities.json",
+        "format": {
+              "type": "topojson",
+              "feature": "vic_localities"
+            }
+      },
+      "transform":[{
+        "calculate": "'Data is not avali in ' + datum.properties.LOC_NAME",
+        "as" : "note"
+      }],
+      "mark":{
+        "type": "geoshape",
+        "fill":"#ddd",
+        "stroke": "white",
+        "strokeWidth": 1
+      },
+      "encoding": {"tooltip": {"field": "note"}}
+
+    },
+
+
+
+    {
+      "data": {
+        "url": "https://raw.githubusercontent.com/BigDjeff/FIT3179_homework2/main/data/Melbourne_housing_TRANSFORMED2.csv"},
+      "transform":[{
+        "lookup": "suburb",
+        "from":{
+          "data":{
+            "url": "https://raw.githubusercontent.com/BigDjeff/FIT3179_homework2/main/js/vic_localities.json",
+            "format": {
+                "type": "topojson",
+                "feature": "vic_localities"
+              }
+            },
+            "key":"properties.LOC_NAME"
+        },
+        "as":"geo"
+      }, 
+      {"filter": "datum.year == year_selection"},
+      {"filter": "type_selection == null || datum.type == type_selection"}
+
+      ],
+      "mark":{"type": "geoshape","stroke":"#fff","strokeWidth":0.5},
+      "encoding": {
+        "shape":{"field":"geo", "type": "geojson"},
+        "color":{
+          "field": "median",
+          "type": "quantitative",
+          "scale":{
+            "domain":[
+              400000 ,
+              3000000
+            ],
+            "scheme":"reds"
+          },
+          "legend": {"format": ".2s"}
+        },
+        "tooltip":[
+        {"field": "suburb", "type": "nominal", "title": "Suburb"},
+        {
+          "field":"median",
+          "type": "quantitative",
+          "title":"Median Price",
+          "format":","
+        },
+        {"field":"year","type": "quantitative","title":"Year"}
+        ]
+      }
+    }
+  ],
+  "config": {}
+}
